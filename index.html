@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Timer with Fixed Pitch</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <h2>Player Timer & Live Score</h2>
+
+    <!-- Total Game Time -->
+    <div class="total-game-time">
+        <h3>Total Game Time: <span id="totalTime">00:00:00</span></h3>
+    </div>
+
+    <!-- Scoreboard Section -->
+    <div class="scoreboard">
+        <div class="score-container">
+            <div class="team">
+                <h3>Home</h3>
+                <button onclick="changeScore('home', -1)">-</button>
+                <span id="homeScore">0</span>
+                <button onclick="changeScore('home', 1)">+</button>
+            </div>
+            <div class="team">
+                <h3>Away</h3>
+                <button onclick="changeScore('away', -1)">-</button>
+                <span id="awayScore">0</span>
+                <button onclick="changeScore('away', 1)">+</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container for both On-Pitch and Off-Pitch Players -->
+    <div class="container">
+        <!-- Fixed Pitch with Room for 5 Players -->
+        <div id="onPitch" class="player-list fixed-pitch">
+            <h3>On Pitch (5 Players Max)</h3>
+            <div id="slot1" class="player-slot">
+                <img src="/pic/gloves.png" alt="Goalkeeper Gloves" class="goalkeeper-gloves">
+                <div class="playerName">Goalkeeper</div> <!-- Will change when a player is added -->
+                <div class="playerTime" id="time-slot1">00:00:00</div>
+                <button onclick="removePlayerFromPitch('player1')" style="display:none;">-</button> <!-- Will be shown when a player is added -->
+            </div>
+            <div id="slot2" class="player-slot">Empty</div>
+            <div id="slot3" class="player-slot">Empty</div>
+            <div id="slot4" class="player-slot">Empty</div>
+            <div id="slot5" class="player-slot">Empty</div>
+        </div>
+
+        <!-- Off-Pitch Player List -->
+        <div id="offPitch" class="player-list">
+            <h3>Off Pitch Players</h3>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button id="startStop" onclick="startStopTimer()">Start / Stop Global Clock</button>
+        <button onclick="resetTimer()">Reset All</button>
+    </div>
+
+    <!-- Edit Name Form -->
+    <div class="editForm">
+        <input type="text" id="editNameInput" placeholder="Enter new player name">
+        <button onclick="editPlayerName()">Edit Name</button>
+    </div>
+
+    <!-- Toggle Edit Buttons -->
+    <div class="toggle-edit">
+        <button id="toggleEditBtn" onclick="toggleEditNames()">Show Edit Names</button>
+    </div>
+</body>
+</html>

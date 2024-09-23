@@ -1,0 +1,101 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.total-game-time {
+    margin-bottom: 20px;
+}
+
+.scoreboard {
+    margin-bottom: 20px;
+}
+
+.score-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.team {
+    display: inline-block;
+    text-align: center;
+}
+
+button {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+}
+
+.player-list {
+    border: 1px solid #000;
+    width: 250px;
+    min-height: 200px;
+    margin: 0 20px;
+    padding: 10px;
+}
+
+.fixed-pitch {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 10px;
+}
+
+.player-slot {
+    background-color: #f1f1f1;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #ccc;
+    min-height: 80px;
+    position: relative;
+}
+
+.goalkeeper-gloves {
+    width: 50px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+/* Align player name, time, and button in a row */
+.player {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.playerName {
+    flex: 2;
+    text-align: left;
+}
+
+.playerTime {
+    flex: 1;
+    text-align: center;
+}
+
+button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.controls {
+    margin-top: 20px;
+}
+
+.editForm {
+    margin-top: 20px;
+}
+
+.toggle-edit {
+    margin-top: 10px;
+}
