@@ -51,8 +51,10 @@ function addPlayerToPitch(playerId) {
         const goalkeeperSlot = document.getElementById('slot1');
         goalkeeperSlot.innerHTML = `
             <img src="/pic/gloves.png" alt="Goalkeeper Gloves" class="goalkeeper-gloves">
-            <div class="playerName">${player.name}</div>
-            <div class="playerTime" id="time-${player.id}">${formatTime(player.time)}</div>
+            <div class="playerDetails">
+                <div class="playerName">${player.name}</div>
+                <div class="playerTime" id="time-${player.id}">${formatTime(player.time)}</div>
+            </div>
             <button onclick="removePlayerFromPitch('${player.id}')">-</button>`;
         player.onPitch = true;
         startPlayerTimer(playerId);
@@ -65,8 +67,10 @@ function addPlayerToPitch(playerId) {
             const playerSlot = document.getElementById(availableSlot);
             playerSlot.innerHTML = `
                 <div class="player">
-                    <div class="playerName">${player.name}</div>
-                    <div class="playerTime" id="time-${player.id}">${formatTime(player.time)}</div>
+                    <div class="playerDetails">
+                        <div class="playerName">${player.name}</div>
+                        <div class="playerTime" id="time-${player.id}">${formatTime(player.time)}</div>
+                    </div>
                     <button onclick="removePlayerFromPitch('${player.id}')">-</button>
                 </div>`;
             player.onPitch = true;
@@ -165,15 +169,17 @@ function toggleEditNames() {
 // Start editing a player's name
 function startEditing(playerId) {
     editingPlayerId = playerId;
-    const currentName = document.querySelector(`#off-${playerId} .playerName`).textContent;
-    document.getElementById('editNameInput').value = currentName;
+    const player = players.find(p => p.id === playerId);
+    document.getElementById('editNameInput').value = player.name;  // Load the current name into the input field
 }
 
 // Change the player's name based on input
 function editPlayerName() {
     const newName = document.getElementById('editNameInput').value;
     if (editingPlayerId && newName) {
-        document.querySelector(`#off-${editingPlayerId} .playerName`).textContent = newName;
+        const player = players.find(p => p.id === editingPlayerId);
+        player.name = newName;  // Update the player's name in the data structure
+        renderOffPitchPlayers();  // Re-render the off-pitch players with the updated name
         editingPlayerId = '';  // Reset after editing
     }
 }

@@ -64,22 +64,27 @@ button {
     margin-bottom: 10px;
 }
 
-/* Align player name, time, and button in a row */
+/* Align player name and time vertically, and button on the right */
 .player {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
 }
 
-.playerName {
+.playerDetails {
     flex: 2;
+    display: flex;
+    flex-direction: column;
     text-align: left;
 }
 
+.playerName {
+    font-weight: bold;
+}
+
 .playerTime {
-    flex: 1;
-    text-align: center;
+    font-size: 0.9em;
+    color: gray;
 }
 
 button {
