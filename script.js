@@ -50,7 +50,7 @@ function addPlayerToPitch(playerId) {
     if (playerId === 'player1') {  // Handle the goalkeeper (first slot) separately
         const goalkeeperSlot = document.getElementById('slot1');
         goalkeeperSlot.innerHTML = `
-            <img src="/pic/gloves.png" alt="Goalkeeper Gloves" class="goalkeeper-gloves">
+            <img src="/clock/pic/gloves.png" alt="Goalkeeper Gloves" class="goalkeeper-gloves">
             <div class="playerDetails">
                 <div class="playerName">${player.name}</div>
                 <div class="playerTime" id="time-${player.id}">${formatTime(player.time)}</div>
@@ -92,7 +92,7 @@ function removePlayerFromPitch(playerId) {
         if (playerId === 'player1') {  // Clear the goalkeeper slot when removed
             const goalkeeperSlot = document.getElementById('slot1');
             goalkeeperSlot.innerHTML = `
-                <img src="/pic/gloves.png" alt="Goalkeeper Gloves" class="goalkeeper-gloves">
+                <img src="/clock/pic/gloves.png" alt="Goalkeeper Gloves" class="goalkeeper-gloves">
                 <div class="playerName">Goalkeeper</div>
                 <div class="playerTime" id="time-slot1">00:00:00</div>`;
         }
