@@ -102,6 +102,12 @@ button:hover {
     margin-left: 10px; /* Optional: add some margin for better spacing */
 }
 
+.statusLabel {
+    font-weight: bold;
+    color: red;
+    margin-bottom: 5px;
+}
+
 .playerName {
     font-weight: bold;
     margin-bottom: 5px;
@@ -154,3 +160,40 @@ button:hover {
     background-color: #ff4500; /* Darker red on hover */
 }
 
+.off-pitch-players {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f9f9f9; /* Light gray background */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.off-pitch-player-slot {
+    background-color: #fafafa; /* Very light gray background */
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #ccc;
+    min-height: 50px;
+    position: relative;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Align elements horizontally */
+    margin-bottom: 10px;
+}
+
+.on-btn {
+    background-color: #32cd32; /* Lime green button */
+    color: white;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.on-btn:hover {
+    background-color: #3cb371; /* Medium sea green on hover */
+}

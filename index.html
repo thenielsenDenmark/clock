@@ -33,23 +33,41 @@
         </div>
     </div>
 
-<!-- Container for both On-Pitch and Off-Pitch Players -->
-<div class="container">
-    <!-- Fixed Pitch with Room for 5 Players -->
-    <div id="onPitch" class="player-list fixed-pitch">
-        <h3>On Pitch (5 Players Max)</h3>
-        <div id="slot1" class="player-slot">Empty</div>
-        <div id="slot2" class="player-slot">Empty</div>
-        <div id="slot3" class="player-slot">Empty</div>
-        <div id="slot4" class="player-slot">Empty</div>
-        <div id="slot5" class="player-slot">Empty</div>
+    <!-- Container for both On-Pitch and Off-Pitch Players -->
+    <div class="container">
+        <!-- Fixed Pitch with Room for 5 Players -->
+        <div id="onPitch" class="player-list fixed-pitch">
+            <h3>On Pitch (5 Players Max)</h3>
+            <div id="slot1" class="player-slot">Empty</div>
+            <div id="slot2" class="player-slot">Empty</div>
+            <div id="slot3" class="player-slot">Empty</div>
+            <div id="slot4" class="player-slot">Empty</div>
+            <div id="slot5" class="player-slot">Empty</div>
+        </div>
+
+        <!-- Off-Pitch Player List -->
+        <div id="offPitch" class="player-list">
+            <h3>Off Pitch Players</h3>
+            <!-- Example of an off-pitch player -->
+            <div class="off-pitch-player-slot">
+                <div class="playerDetails">
+                    <div class="statusLabel">Off</div>
+                    <div class="playerName">Player 1</div>
+                    <div class="playerTime">00:00:00</div>
+                </div>
+                <button class="on-btn" onclick="addPlayerToPitch('player1')">On</button>
+            </div>
+            <div class="off-pitch-player-slot">
+                <div class="playerDetails">
+                    <div class="statusLabel">Off</div>
+                    <div class="playerName">Player 2</div>
+                </div>
+                <button class="on-btn" onclick="addPlayerToPitch('player2')">On</button>
+            </div>
+            <!-- Add more off-pitch players as needed -->
+        </div>
     </div>
 
-    <!-- Off-Pitch Player List -->
-    <div id="offPitch" class="player-list">
-        <h3>Off Pitch Players</h3>
-    </div>
-</div>
     <!-- Controls -->
     <div class="controls">
         <button onclick="resetTimer()">Reset All</button>
