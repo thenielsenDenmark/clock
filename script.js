@@ -1,16 +1,15 @@
 let isGlobalTimerRunning = false;
-let totalGameSeconds = 0;
+let totalGameSeconds = 0; // This should be updated according to the game's time progression
 let globalInterval;
 let playersOnPitch = {};  // Active players on the pitch
-let allPlayers = {};      // Cumulative time for all players
 const MAX_PLAYERS_ON_PITCH = 5;
-const pitchSlots = ['slot2', 'slot3', 'slot4', 'slot5'];  // Only other slots for players
-let editingPlayerId = '';
+const pitchSlots = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5'];
 let homeScore = 0;
 let awayScore = 0;
 
+
 const players = [
-    { id: 'player1', name: 'Player 1', time: 0, onPitch: false },
+    { id: 'player1', name: 'Goalkeeper', time: 0, onPitch: false },
     { id: 'player2', name: 'Player 2', time: 0, onPitch: false },
     { id: 'player3', name: 'Player 3', time: 0, onPitch: false },
     { id: 'player4', name: 'Player 4', time: 0, onPitch: false },
@@ -23,6 +22,7 @@ const players = [
 // Initialize the Off-Pitch Players on page load
 window.onload = () => {
     renderOffPitchPlayers();
+    addGoalButtonListeners();
 };
 
 // Renders the off-pitch players
@@ -44,41 +44,26 @@ function renderOffPitchPlayers() {
 
 // Adds a player to the pitch (if space is available)
 function addPlayerToPitch(playerId) {
-    const availableSlot = pitchSlots.find(slot => document.getElementById(slot).textContent === 'Empty');
-    const player = players.find(p => p.id === playerId);
-
-    if (playerId === 'player1') {  // Handle the goalkeeper (first slot) separately
-        const goalkeeperSlot = document.getElementById('slot1');
-        goalkeeperSlot.innerHTML = `
-            <img src="/clock/pic/gloves.png" alt="Goalkeeper Gloves" class="goalkeeper-gloves">
+    const emptySlot = pitchSlots.find(slot => document.getElementById(slot).innerText === 'Empty');
+    
+    if (emptySlot && players.some(p => p.id === playerId)) {
+        const player = players.find(p => p.id === playerId);
+        
+        // Update the slot with player details
+        document.getElementById(emptySlot).innerHTML = `
             <div class="playerDetails">
                 <div class="playerName">${player.name}</div>
-                <div class="playerTime" id="time-${player.id}">${formatTime(player.time)}</div>
+                <div class="playerTime" id="time-${playerId}">00:00:00</div>
             </div>
-            <button onclick="removePlayerFromPitch('${player.id}')">-</button>`;
+            <button onclick="removePlayerFromPitch('${playerId}')">-</button>
+            <button class="goal-btn" onclick="logGoal('${playerId}', 'home')">⚽</button>
+        `;
+        
         player.onPitch = true;
-        startPlayerTimer(playerId);
-        renderOffPitchPlayers();  // Re-render the off-pitch players
-        return;
-    }
-
-    if (availableSlot) {
-        if (!player.onPitch) {
-            const playerSlot = document.getElementById(availableSlot);
-            playerSlot.innerHTML = `
-                <div class="player">
-                    <div class="playerDetails">
-                        <div class="playerName">${player.name}</div>
-                        <div class="playerTime" id="time-${player.id}">${formatTime(player.time)}</div>
-                    </div>
-                    <button onclick="removePlayerFromPitch('${player.id}')">-</button>
-                </div>`;
-            player.onPitch = true;
-            startPlayerTimer(playerId);
-            renderOffPitchPlayers();  // Re-render the off-pitch players after adding to the pitch
-        }
+        startPlayerTimer(playerId);  // Start the player's timer
+        renderOffPitchPlayers();     // Re-render off-pitch players after adding to pitch
     } else {
-        alert("No available space on the pitch. Maximum 5 players allowed.");
+        console.warn('No available slot or invalid player.');
     }
 }
 
@@ -89,18 +74,9 @@ function removePlayerFromPitch(playerId) {
         stopPlayerTimer(playerId);  // Stop the timer but keep the time
         player.onPitch = false;
 
-        if (playerId === 'player1') {  // Clear the goalkeeper slot when removed
-            const goalkeeperSlot = document.getElementById('slot1');
-            goalkeeperSlot.innerHTML = `
-                <img src="/clock/pic/gloves.png" alt="Goalkeeper Gloves" class="goalkeeper-gloves">
-                <div class="playerName">Goalkeeper</div>
-                <div class="playerTime" id="time-slot1">00:00:00</div>`;
-        }
-
-        // Clear the player slot
         pitchSlots.forEach(slot => {
             const slotDiv = document.getElementById(slot);
-            if (slotDiv.querySelector(`#time-${player.id}`)) {
+            if (slotDiv.querySelector(`#time-${playerId}`)) {
                 slotDiv.innerHTML = 'Empty';  // Clear the slot
             }
         });
@@ -125,10 +101,9 @@ function startStopTimer() {
 
 // Start a player's individual timer
 function startPlayerTimer(playerId) {
-    if (!allPlayers[playerId]) {
-        allPlayers[playerId] = { time: 0 };
+    if (!playersOnPitch[playerId]) {
+        playersOnPitch[playerId] = { time: 0 };
     }
-    playersOnPitch[playerId] = allPlayers[playerId];
 }
 
 // Stop a player's individual timer but keep their time
@@ -184,14 +159,49 @@ function editPlayerName() {
     }
 }
 
-// Change the score for home or away teams
+// Function to change the score and log goals
 function changeScore(team, increment) {
+    const goalLogDiv = document.getElementById('goalLog');
+    
+    // Calculate the current minute of the game
+    const currentMinute = Math.floor(totalGameSeconds / 60);
+
     if (team === 'home') {
-        homeScore = Math.max(0, homeScore + increment);  // Prevent negative scores
+        homeScore += increment;
         document.getElementById('homeScore').textContent = homeScore;
+
+        // Log the goal if the score was incremented
+        if (increment > 0) {
+            goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} Home Team scored (min ${currentMinute})</div>`;
+        }
     } else if (team === 'away') {
-        awayScore = Math.max(0, awayScore + increment);  // Prevent negative scores
+        awayScore += increment;
         document.getElementById('awayScore').textContent = awayScore;
+
+        // Log the goal if the score was incremented
+        if (increment > 0) {
+            goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} Away Team scored (min ${currentMinute})</div>`;
+        }
+    }
+}
+// Goal log
+function logGoal(playerId, team) {
+    const player = players.find(p => p.id === playerId);
+    const goalLogDiv = document.getElementById('goalLog');
+    
+    // Calculate the current minute of the game
+    const currentMinute = Math.floor(totalGameSeconds / 60);
+
+    if (team === 'home' && player && player.onPitch) {
+        homeScore++;
+        document.getElementById('homeScore').textContent = homeScore; // Update home score display
+        goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} ${player.name} scored for Home Team (min ${currentMinute})</div>`;
+    } else if (team === 'away') {
+        awayScore++;
+        document.getElementById('awayScore').textContent = awayScore; // Update away score display
+        goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} Away Team scored (min ${currentMinute})</div>`;
+    } else {
+        goalLogDiv.innerHTML += `<div>Unknown player scored a goal! (min ${currentMinute})</div>`;
     }
 }
 
@@ -200,9 +210,28 @@ function resetTimer() {
     clearInterval(globalInterval);
     totalGameSeconds = 0;
     document.getElementById("totalTime").textContent = "00:00:00";
-    Object.keys(allPlayers).forEach(playerId => {
-        allPlayers[playerId].time = 0;
-        document.getElementById(`time-${playerId}`).textContent = "00:00:00";
+    players.forEach(player => {
+        player.time = 0;
+        const playerTimeElement = document.getElementById(`time-${player.id}`);
+        if (playerTimeElement) {
+            playerTimeElement.textContent = "00:00:00";
+        }
     });
     playersOnPitch = {};  // Clear all active players
+    document.getElementById('goalLog').innerHTML = '';  // Clear the goal log
+}
+
+// Add event listeners to goal buttons
+function addGoalButtonListeners() {
+    players.forEach(player => {
+        const playerGoalButton = document.getElementById(`goal-${player.id}`);
+        if (playerGoalButton) {
+            playerGoalButton.addEventListener('click', () => logGoal(player.id, 'home'));
+        }
+    });
+
+    const awayGoalButton = document.getElementById('awayGoalButton');
+    if (awayGoalButton) {
+        awayGoalButton.addEventListener('click', () => logGoal(null, 'away'));
+    }
 }

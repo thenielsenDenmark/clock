@@ -3,18 +3,13 @@ body {
     text-align: center;
 }
 
-.total-game-time {
-    margin-bottom: 20px;
-}
-
-.scoreboard {
+.total-game-time, .scoreboard, .controls, .editForm, .toggle-edit, .global-clock-control, .goal-log {
     margin-bottom: 20px;
 }
 
 .score-container {
     display: flex;
     justify-content: space-around;
-    margin-bottom: 20px;
 }
 
 .team {
@@ -25,6 +20,7 @@ body {
 button {
     padding: 5px 10px;
     cursor: pointer;
+    margin-left: 5px;
 }
 
 .container {
@@ -64,22 +60,22 @@ button {
     margin-bottom: 10px;
 }
 
-/* Align player name and time vertically, and button on the right */
+/* Align player details and time vertically, and buttons on the right */
 .player {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: space-between; /* Align items horizontally */
+    align-items: center; /* Center items vertically */
+    margin-bottom: 10px;
 }
 
 .playerDetails {
-    flex: 2;
-    display: flex;
-    flex-direction: column;
+    flex-grow: 1; /* Allow details to take up remaining space */
     text-align: left;
 }
 
 .playerName {
     font-weight: bold;
+    margin-bottom: 5px;
 }
 
 .playerTime {
@@ -87,20 +83,20 @@ button {
     color: gray;
 }
 
-button {
-    margin-left: 10px;
-    padding: 5px 10px;
+.goal-btn {
+    background-color: #ffcc00;
+    border-radius: 50%;
+    padding: 10px;
     cursor: pointer;
+    border: none;
+    font-size: 1.2em;
+    margin-left: 10px;
 }
 
-.controls {
-    margin-top: 20px;
-}
-
-.editForm {
-    margin-top: 20px;
-}
-
-.toggle-edit {
-    margin-top: 10px;
+.goal-log {
+    text-align: left;
+    max-width: 600px;
+    margin: 0 auto;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
 }

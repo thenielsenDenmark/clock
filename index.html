@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player Timer with Fixed Pitch</title>
+    <title>Player Timer with Goals</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
@@ -33,34 +33,25 @@
         </div>
     </div>
 
-    <!-- Container for both On-Pitch and Off-Pitch Players -->
-    <div class="container">
-        <!-- Fixed Pitch with Room for 5 Players -->
-        <div id="onPitch" class="player-list fixed-pitch">
-            <h3>On Pitch (5 Players Max)</h3>
-            <div id="slot1" class="player-slot">
-                <img src="/clock/pic/gloves.png" alt="Goalkeeper Gloves" class="goalkeeper-gloves">
-                <div class="playerDetails">
-                    <div class="playerName">Goalkeeper</div> <!-- Will change when a player is added -->
-                    <div class="playerTime" id="time-slot1">00:00:00</div>
-                </div>
-                <button onclick="removePlayerFromPitch('player1')" style="display:none;">-</button>
-            </div>
-            <div id="slot2" class="player-slot">Empty</div>
-            <div id="slot3" class="player-slot">Empty</div>
-            <div id="slot4" class="player-slot">Empty</div>
-            <div id="slot5" class="player-slot">Empty</div>
-        </div>
-
-        <!-- Off-Pitch Player List -->
-        <div id="offPitch" class="player-list">
-            <h3>Off Pitch Players</h3>
-        </div>
+<!-- Container for both On-Pitch and Off-Pitch Players -->
+<div class="container">
+    <!-- Fixed Pitch with Room for 5 Players -->
+    <div id="onPitch" class="player-list fixed-pitch">
+        <h3>On Pitch (5 Players Max)</h3>
+        <div id="slot1" class="player-slot">Empty</div>
+        <div id="slot2" class="player-slot">Empty</div>
+        <div id="slot3" class="player-slot">Empty</div>
+        <div id="slot4" class="player-slot">Empty</div>
+        <div id="slot5" class="player-slot">Empty</div>
     </div>
 
+    <!-- Off-Pitch Player List -->
+    <div id="offPitch" class="player-list">
+        <h3>Off Pitch Players</h3>
+    </div>
+</div>
     <!-- Controls -->
     <div class="controls">
-        <button id="startStop" onclick="startStopTimer()">Start / Stop Global Clock</button>
         <button onclick="resetTimer()">Reset All</button>
     </div>
 
@@ -73,6 +64,17 @@
     <!-- Toggle Edit Buttons -->
     <div class="toggle-edit">
         <button id="toggleEditBtn" onclick="toggleEditNames()">Show Edit Names</button>
+    </div>
+
+    <!-- Start/Stop Global Clock Button at the Bottom -->
+    <div class="global-clock-control">
+        <button id="startStop" onclick="startStopTimer()">Start / Stop Global Clock</button>
+    </div>
+
+    <!-- Goal Log -->
+    <div class="goal-log">
+        <h3>Goal Log</h3>
+        <div id="goalLog"></div>
     </div>
 </body>
 </html>
