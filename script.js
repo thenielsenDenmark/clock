@@ -9,7 +9,7 @@ let awayScore = 0;
 
 
 const players = [
-    { id: 'player1', name: 'Goalkeeper', time: 0, onPitch: false },
+    { id: 'player1', name: 'Player 1', time: 0, onPitch: false },
     { id: 'player2', name: 'Player 2', time: 0, onPitch: false },
     { id: 'player3', name: 'Player 3', time: 0, onPitch: false },
     { id: 'player4', name: 'Player 4', time: 0, onPitch: false },
@@ -49,15 +49,17 @@ function addPlayerToPitch(playerId) {
     if (emptySlot && players.some(p => p.id === playerId)) {
         const player = players.find(p => p.id === playerId);
         
-        // Update the slot with player details
-        document.getElementById(emptySlot).innerHTML = `
-            <div class="playerDetails">
-                <div class="playerName">${player.name}</div>
-                <div class="playerTime" id="time-${playerId}">00:00:00</div>
-            </div>
-            <button onclick="removePlayerFromPitch('${playerId}')">-</button>
-            <button class="goal-btn" onclick="logGoal('${playerId}', 'home')">⚽</button>
-        `;
+// Update the slot with player details
+document.getElementById(emptySlot).innerHTML = `
+    <div class="player">
+        <button class="off-btn" onclick="removePlayerFromPitch('${playerId}')">Off</button>
+        <div class="playerDetails">
+            <div class="playerName">${player.name}</div>
+            <div class="playerTime" id="time-${playerId}">00:00:00</div>
+        </div>
+        <button class="goal-btn" onclick="logGoal('${playerId}', 'home')">⚽</button>
+    </div>
+`;
         
         player.onPitch = true;
         startPlayerTimer(playerId);  // Start the player's timer

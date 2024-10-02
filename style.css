@@ -1,6 +1,8 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
+    background-color: #f0f8ff; /* Light blue background */
+    color: #333; /* Darker text for contrast */
 }
 
 .total-game-time, .scoreboard, .controls, .editForm, .toggle-edit, .global-clock-control, .goal-log {
@@ -10,17 +12,33 @@ body {
 .score-container {
     display: flex;
     justify-content: space-around;
+    background-color: #e6e6fa; /* Lavender background */
+    padding: 10px;
+    border-radius: 8px;
 }
 
 .team {
     display: inline-block;
     text-align: center;
+    background-color: #fff; /* White background for teams */
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 button {
     padding: 5px 10px;
     cursor: pointer;
     margin-left: 5px;
+    background-color: #4682b4; /* Steel blue button */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #5a9bd4; /* Lighter steel blue on hover */
 }
 
 .container {
@@ -35,6 +53,12 @@ button {
     min-height: 200px;
     margin: 0 20px;
     padding: 10px;
+    background-color: #fdfdfe; /* Almost white background */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .fixed-pitch {
@@ -44,12 +68,16 @@ button {
 }
 
 .player-slot {
-    background-color: #f1f1f1;
+    background-color: #fafafa; /* Very light gray background */
     padding: 15px;
     text-align: center;
     border: 1px solid #ccc;
     min-height: 80px;
     position: relative;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Align elements horizontally */
 }
 
 .goalkeeper-gloves {
@@ -71,6 +99,7 @@ button {
 .playerDetails {
     flex-grow: 1; /* Allow details to take up remaining space */
     text-align: left;
+    margin-left: 10px; /* Optional: add some margin for better spacing */
 }
 
 .playerName {
@@ -84,13 +113,18 @@ button {
 }
 
 .goal-btn {
-    background-color: #ffcc00;
+    background-color: #ffcc00; /* Gold color for goal button */
     border-radius: 50%;
     padding: 10px;
     cursor: pointer;
     border: none;
     font-size: 1.2em;
     margin-left: 10px;
+    transition: transform 0.3s;
+}
+
+.goal-btn:hover {
+    transform: scale(1.1); /* Slightly enlarge on hover */
 }
 
 .goal-log {
@@ -99,4 +133,24 @@ button {
     margin: 0 auto;
     border-top: 1px solid #ccc;
     padding-top: 10px;
+    background-color: #fff; /* White background for log */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(255, 219, 219, 0.1);
 }
+
+/* Specific styling for the "off" button */
+.off-btn {
+    background-color: #ff6347; /* Tomato red color for off button */
+    color: white;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s;
+    margin-right: 10px; /* Add spacing between the button and player details */
+}
+
+.off-btn:hover {
+    background-color: #ff4500; /* Darker red on hover */
+}
+
