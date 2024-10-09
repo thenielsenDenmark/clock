@@ -55,13 +55,13 @@ function addPlayerToPitch(playerId) {
                 <button class="off-btn" onclick="removePlayerFromPitch('${playerId}')">Off</button>
                 <div class="playerDetails">
                     <div class="playerName">${player.name}</div>
-                    <div class="playerTime" id="time-${playerId}">00:00:00</div>
+                    <div class="playerTime" id="time-${playerId}">${formatTime(player.time)}</div>
                 </div>
                 <button class="goal-btn" onclick="logGoal('${playerId}', 'home')">⚽</button>
             </div>`;
         
         player.onPitch = true;
-        startPlayerTimer(playerId); // Start the player's timer
+        startPlayerTimer(playerId); // Start or resume the player's timer
         renderOffPitchPlayers(); // Re-render off-pitch players after adding to pitch
     } else {
         console.warn('No available slot or invalid player.');
@@ -107,7 +107,8 @@ function startStopTimer() {
 // Start a player's individual timer
 function startPlayerTimer(playerId) {
     if (!playersOnPitch[playerId]) {
-        playersOnPitch[playerId] = { time: 0 };
+        const player = players.find(p => p.id === playerId);
+        playersOnPitch[playerId] = { time: player.time }; // Use existing time
     }
 }
 
@@ -128,14 +129,12 @@ function updatePlayerTimers(deltaSeconds) {
     });
 }
 
-// Helper function to format time as HH:MM:SS
-function formatTime(seconds) {
-    const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
-    const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
-    const secs = String(seconds % 60).padStart(2, '0');
-    return `${hours}:${minutes}:${secs}`;
+// Helper function to format time as MM:SS
+function formatTime(totalSeconds) {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
-
 // Toggle visibility of "Edit Name" buttons
 function toggleEditNames() {
     const editButtons = document.querySelectorAll('.editPlayerBtn');
@@ -164,33 +163,26 @@ function editPlayerName() {
     }
 }
 
-// Helper function to format time as MM:SS
-function formatTime(seconds) {
-    const minutes = String(Math.floor(seconds / 60)).padStart(2, '0');
-    const secs = String(seconds % 60).padStart(2, '0');
-    return `${minutes}:${secs}`;
-}
-
 // Goal log function
 function logGoal(playerId, team) {
     const player = players.find(p => p.id === playerId);
     const goalLogDiv = document.getElementById('goalLog');
-
-    // Format the current game time using totalGameSeconds
-    const formattedTime = formatTime(totalGameSeconds);
-
-    if (team === 'home' && player && player.onPitch) {
-        homeScore++;
-        document.getElementById('homeScore').textContent = homeScore; // Update home score display
-        goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} ${player.name} scored for Allerød at ${formattedTime}</div>`;
-    } else if (team === 'away') {
-        awayScore++;
-        document.getElementById('awayScore').textContent = awayScore; // Update away score display
-        goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} Away Team scored at ${formattedTime}</div>`;
-    } else {
-        goalLogDiv.innerHTML += `<div>Unknown player scored a goal! at ${formattedTime}</div>`;
+   
+        // Format the current game time using totalGameSeconds
+        const formattedTime = formatTime(totalGameSeconds);
+    
+        if (team === 'home' && player && player.onPitch) {
+            homeScore++;
+            document.getElementById('homeScore').textContent = homeScore; // Update home score display
+            goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} ${player.name} scored for Allerød at ${formattedTime}</div>`;
+        } else if (team === 'away') {
+            awayScore++;
+            document.getElementById('awayScore').textContent = awayScore; // Update away score display
+            goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} Allerød scored at ${formattedTime}</div>`;
+        } else {
+            goalLogDiv.innerHTML += `<div>Unknown player scored a goal! at ${formattedTime}</div>`;
+        }
     }
-}
 
 // Function to change the score and log goals
 function changeScore(team, increment) {
@@ -205,7 +197,7 @@ function changeScore(team, increment) {
 
         // Log the goal if the score was incremented
         if (increment > 0) {
-            goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} Home Team scored at ${formattedTime}</div>`;
+            goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} Allerød scored at ${formattedTime}</div>`;
         }
     } else if (team === 'away') {
         awayScore += increment;
@@ -224,7 +216,7 @@ function resetTimer() {
     totalGameSeconds = 0;
     document.getElementById("totalTime").textContent = "00:00:00";
     players.forEach(player => {
-        player.time = 0;
+        player.time = 0; // Reset each player's time
         const playerTimeElement = document.getElementById(`time-${player.id}`);
         if (playerTimeElement) {
             playerTimeElement.textContent = "00:00:00";
