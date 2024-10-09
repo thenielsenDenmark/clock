@@ -160,12 +160,12 @@ button:hover {
     background-color: #ff4500; /* Darker red on hover */
 }
 
-.off-pitch-players {
+body .off-pitch-players {
     display: flex;
     flex-direction: column;
     margin-top: 20px;
     padding: 10px;
-    background-color: #f9f9f9; /* Light gray background */
+    background-color: #98fb98 !important; /* Pale Green background */
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -180,7 +180,7 @@ button:hover {
     border-radius: 8px;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Align elements horizontally */
+    justify-content: space-between;
     margin-bottom: 10px;
 }
 

@@ -1,12 +1,12 @@
 let isGlobalTimerRunning = false;
-let totalGameSeconds = 0; // This should be updated according to the game's time progression
+let totalGameSeconds = 0; // Total seconds since the game started
 let globalInterval;
-let playersOnPitch = {};  // Active players on the pitch
+let lastUpdateTime; // Tracks the last time the interval was updated
+let playersOnPitch = {}; // Active players on the pitch
 const MAX_PLAYERS_ON_PITCH = 5;
 const pitchSlots = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5'];
 let homeScore = 0;
 let awayScore = 0;
-
 
 const players = [
     { id: 'player1', name: 'Player 1', time: 0, onPitch: false },
@@ -28,7 +28,7 @@ window.onload = () => {
 // Renders the off-pitch players
 function renderOffPitchPlayers() {
     const offPitchDiv = document.getElementById('offPitch');
-    offPitchDiv.innerHTML = '';  // Clear the current list
+    offPitchDiv.innerHTML = ''; // Clear the current list
     players.forEach(player => {
         if (!player.onPitch) {
             offPitchDiv.innerHTML += `
@@ -49,21 +49,20 @@ function addPlayerToPitch(playerId) {
     if (emptySlot && players.some(p => p.id === playerId)) {
         const player = players.find(p => p.id === playerId);
         
-// Update the slot with player details
-document.getElementById(emptySlot).innerHTML = `
-    <div class="player">
-        <button class="off-btn" onclick="removePlayerFromPitch('${playerId}')">Off</button>
-        <div class="playerDetails">
-            <div class="playerName">${player.name}</div>
-            <div class="playerTime" id="time-${playerId}">00:00:00</div>
-        </div>
-        <button class="goal-btn" onclick="logGoal('${playerId}', 'home')">⚽</button>
-    </div>
-`;
+        // Update the slot with player details
+        document.getElementById(emptySlot).innerHTML = `
+            <div class="player">
+                <button class="off-btn" onclick="removePlayerFromPitch('${playerId}')">Off</button>
+                <div class="playerDetails">
+                    <div class="playerName">${player.name}</div>
+                    <div class="playerTime" id="time-${playerId}">00:00:00</div>
+                </div>
+                <button class="goal-btn" onclick="logGoal('${playerId}', 'home')">⚽</button>
+            </div>`;
         
         player.onPitch = true;
-        startPlayerTimer(playerId);  // Start the player's timer
-        renderOffPitchPlayers();     // Re-render off-pitch players after adding to pitch
+        startPlayerTimer(playerId); // Start the player's timer
+        renderOffPitchPlayers(); // Re-render off-pitch players after adding to pitch
     } else {
         console.warn('No available slot or invalid player.');
     }
@@ -73,17 +72,17 @@ document.getElementById(emptySlot).innerHTML = `
 function removePlayerFromPitch(playerId) {
     const player = players.find(p => p.id === playerId);
     if (player.onPitch) {
-        stopPlayerTimer(playerId);  // Stop the timer but keep the time
+        stopPlayerTimer(playerId); // Stop the timer but keep the time
         player.onPitch = false;
 
         pitchSlots.forEach(slot => {
             const slotDiv = document.getElementById(slot);
             if (slotDiv.querySelector(`#time-${playerId}`)) {
-                slotDiv.innerHTML = 'Empty';  // Clear the slot
+                slotDiv.innerHTML = 'Empty'; // Clear the slot
             }
         });
 
-        renderOffPitchPlayers();  // Re-render off-pitch players after removing from pitch
+        renderOffPitchPlayers(); // Re-render off-pitch players after removing from pitch
     }
 }
 
@@ -92,10 +91,14 @@ function startStopTimer() {
     if (isGlobalTimerRunning) {
         clearInterval(globalInterval);
     } else {
+        lastUpdateTime = Date.now();
         globalInterval = setInterval(() => {
-            totalGameSeconds++;
+            const now = Date.now();
+            const deltaSeconds = Math.floor((now - lastUpdateTime) / 1000);
+            totalGameSeconds += deltaSeconds;
+            lastUpdateTime = now;
             document.getElementById("totalTime").textContent = formatTime(totalGameSeconds);
-            updatePlayerTimers();
+            updatePlayerTimers(deltaSeconds);
         }, 1000);
     }
     isGlobalTimerRunning = !isGlobalTimerRunning;
@@ -112,15 +115,15 @@ function startPlayerTimer(playerId) {
 function stopPlayerTimer(playerId) {
     if (playersOnPitch[playerId]) {
         const player = players.find(p => p.id === playerId);
-        player.time = playersOnPitch[playerId].time;  // Transfer the current time to the player
+        player.time = playersOnPitch[playerId].time; // Transfer the current time to the player
         delete playersOnPitch[playerId];
     }
 }
 
 // Update the timers for all players currently on the pitch
-function updatePlayerTimers() {
+function updatePlayerTimers(deltaSeconds) {
     Object.keys(playersOnPitch).forEach(playerId => {
-        playersOnPitch[playerId].time++;
+        playersOnPitch[playerId].time += deltaSeconds;
         document.getElementById(`time-${playerId}`).textContent = formatTime(playersOnPitch[playerId].time);
     });
 }
@@ -147,7 +150,7 @@ function toggleEditNames() {
 function startEditing(playerId) {
     editingPlayerId = playerId;
     const player = players.find(p => p.id === playerId);
-    document.getElementById('editNameInput').value = player.name;  // Load the current name into the input field
+    document.getElementById('editNameInput').value = player.name; // Load the current name into the input field
 }
 
 // Change the player's name based on input
@@ -155,9 +158,37 @@ function editPlayerName() {
     const newName = document.getElementById('editNameInput').value;
     if (editingPlayerId && newName) {
         const player = players.find(p => p.id === editingPlayerId);
-        player.name = newName;  // Update the player's name in the data structure
-        renderOffPitchPlayers();  // Re-render the off-pitch players with the updated name
-        editingPlayerId = '';  // Reset after editing
+        player.name = newName; // Update the player's name in the data structure
+        renderOffPitchPlayers(); // Re-render the off-pitch players with the updated name
+        editingPlayerId = ''; // Reset after editing
+    }
+}
+
+// Helper function to format time as MM:SS
+function formatTime(seconds) {
+    const minutes = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    return `${minutes}:${secs}`;
+}
+
+// Goal log function
+function logGoal(playerId, team) {
+    const player = players.find(p => p.id === playerId);
+    const goalLogDiv = document.getElementById('goalLog');
+
+    // Format the current game time using totalGameSeconds
+    const formattedTime = formatTime(totalGameSeconds);
+
+    if (team === 'home' && player && player.onPitch) {
+        homeScore++;
+        document.getElementById('homeScore').textContent = homeScore; // Update home score display
+        goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} ${player.name} scored for Allerød at ${formattedTime}</div>`;
+    } else if (team === 'away') {
+        awayScore++;
+        document.getElementById('awayScore').textContent = awayScore; // Update away score display
+        goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} Away Team scored at ${formattedTime}</div>`;
+    } else {
+        goalLogDiv.innerHTML += `<div>Unknown player scored a goal! at ${formattedTime}</div>`;
     }
 }
 
@@ -165,8 +196,8 @@ function editPlayerName() {
 function changeScore(team, increment) {
     const goalLogDiv = document.getElementById('goalLog');
     
-    // Calculate the current minute of the game
-    const currentMinute = Math.floor(totalGameSeconds / 60);
+    // Format the current game time using totalGameSeconds
+    const formattedTime = formatTime(totalGameSeconds);
 
     if (team === 'home') {
         homeScore += increment;
@@ -174,7 +205,7 @@ function changeScore(team, increment) {
 
         // Log the goal if the score was incremented
         if (increment > 0) {
-            goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} Home Team scored (min ${currentMinute})</div>`;
+            goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} Home Team scored at ${formattedTime}</div>`;
         }
     } else if (team === 'away') {
         awayScore += increment;
@@ -182,28 +213,8 @@ function changeScore(team, increment) {
 
         // Log the goal if the score was incremented
         if (increment > 0) {
-            goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} Away Team scored (min ${currentMinute})</div>`;
+            goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} Away Team scored at ${formattedTime}</div>`;
         }
-    }
-}
-// Goal log
-function logGoal(playerId, team) {
-    const player = players.find(p => p.id === playerId);
-    const goalLogDiv = document.getElementById('goalLog');
-    
-    // Calculate the current minute of the game
-    const currentMinute = Math.floor(totalGameSeconds / 60);
-
-    if (team === 'home' && player && player.onPitch) {
-        homeScore++;
-        document.getElementById('homeScore').textContent = homeScore; // Update home score display
-        goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} ${player.name} scored for Home Team (min ${currentMinute})</div>`;
-    } else if (team === 'away') {
-        awayScore++;
-        document.getElementById('awayScore').textContent = awayScore; // Update away score display
-        goalLogDiv.innerHTML += `<div>${homeScore}-${awayScore} Away Team scored (min ${currentMinute})</div>`;
-    } else {
-        goalLogDiv.innerHTML += `<div>Unknown player scored a goal! (min ${currentMinute})</div>`;
     }
 }
 
@@ -219,8 +230,8 @@ function resetTimer() {
             playerTimeElement.textContent = "00:00:00";
         }
     });
-    playersOnPitch = {};  // Clear all active players
-    document.getElementById('goalLog').innerHTML = '';  // Clear the goal log
+    playersOnPitch = {}; // Clear all active players
+    document.getElementById('goalLog').innerHTML = ''; // Clear the goal log
 }
 
 // Add event listeners to goal buttons
